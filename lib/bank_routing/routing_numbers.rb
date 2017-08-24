@@ -1,7 +1,7 @@
 require 'logger'
 require 'yajl'
 
-require "bank_routing/storage/memory"
+require 'bank_routing/storage/memory'
 
 class RoutingNumber
 
@@ -108,11 +108,8 @@ class RoutingNumber
 		def get_raw_data
 			if options[:fetch_fed_data]
 				log.info "Getting new bank routing data from: #{options[:routing_data_url]}"
-				require 'typhoeus'
-				response = Typhoeus::Request.post(options[:routing_data_agreement_url], body: 'agreementValue=Agree')
-				set_cookie = response.headers["Set-Cookie"].match(/JSESSIONID=.*?;/).to_s
-				Typhoeus::Request.get(options[:routing_data_url], ssl_verifypeer: false,
-					headers: { 'Cookie' => set_cookie } ).body
+				require 'bank_routing/http_adapter'
+				HttpAdapter.new(options).fetch_routing_directory
 			else
 				log.info "Using routing data from local file at: #{options[:routing_data_file]}"
 				File.new(options[:routing_data_file])
@@ -120,6 +117,8 @@ class RoutingNumber
 		end
 
 		def load_routing_numbers(data=get_raw_data)
+			return unless data&.respond_to?(:each_line)
+
 			if store.loading!
 				loading!
 				data.each_line do |line|
