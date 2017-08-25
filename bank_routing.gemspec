@@ -24,7 +24,7 @@ Gem::Specification.new do |gem|
 	gem.add_development_dependency 'redis'
 	gem.add_development_dependency 'pg'
 
-	gem.add_dependency 'typhoeus', '~> 0.6'
+	gem.add_dependency 'typhoeus', '~> 1.0'
 	gem.add_dependency 'yajl-ruby', '~> 1.2'
 
 end
