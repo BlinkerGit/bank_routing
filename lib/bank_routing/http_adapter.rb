@@ -21,7 +21,7 @@ class RoutingNumber
         Typhoeus::Request.get(
           options[:routing_data_url],
           ssl_verifypeer: false,
-          headers: { 'Cookie' => session_id.to_s }
+          headers: { 'Cookie' => "abaDataCaptureCookie=abaDataCaptureCookie; #{session_id.to_s}" }
         ).body
       end
     end
